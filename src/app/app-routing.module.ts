@@ -1,39 +1,29 @@
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { OrderSummaryComponent } from './order-summary/order-summary.component';
-import { ProductsComponent } from './products/products.component';
-import { AddPizzasComponent } from './add-pizzas/add-pizzas.component';
-import { AdminViewComponent } from './admin-view/admin-view.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import {canActivate, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
-import { ProductViewComponent } from './product-view/product-view.component';
-import { ChefViewComponent } from './chef-view/chef-view.component';
-import { HomeViewComponent } from './home-view/home-view.component';
-import { WhoWeAreComponent } from './who-we-are/who-we-are.component';
-import { ContactoComponent } from './contacto/contacto.component';
-import { EquipoComponent } from './equipo/equipo.component';
-
-const routes: Routes = [
-  {path:'', pathMatch: 'full', redirectTo: "/Products" },
-  //{path:"Products", component:ProductsComponent, ...canActivate(()=> redirectUnauthorizedTo(['/Login']))},
-  {path:"Products", component:ProductsComponent},
-  {path:"OrderSummary", component:OrderSummaryComponent},
-  {path:"Admin", component:AdminViewComponent},
-  {path:"Register", component:RegisterComponent},
-  {path:"Login", component:LoginComponent},
-  {path:"ChefView", component:ChefViewComponent},
-  {path: "ProductDetail/:id", component:ProductViewComponent},
-  {path:"ChefView", component:ChefViewComponent},
-  {path: "Home-View", component:HomeViewComponent},
-  {path: "Quem-somos", component:WhoWeAreComponent},
-  {path: "Contato", component:ContactoComponent},
-  {path: "Equipe", component: EquipoComponent}
-];
+import { NotfoundComponent } from './demo/components/notfound/notfound.component';
+import { AppLayoutComponent } from "./layout/app.layout.component";
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [
+        RouterModule.forRoot([
+            {
+                path: '', component: AppLayoutComponent,
+                children: [
+                    { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
+                    { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
+                    { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
+                    { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
+                    { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
+                    { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
+                ]
+            },
+            { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
+            { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
+            { path: 'notfound', component: NotfoundComponent },
+            { path: '**', redirectTo: '/notfound' },
+        ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
+    ],
+    exports: [RouterModule]
 })
-export class AppRoutingModule { }
-
+export class AppRoutingModule {
+}
